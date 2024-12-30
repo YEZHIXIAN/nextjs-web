@@ -1,0 +1,62 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1735074360432,
+      "tag": "20241224210600_gigantic_puff_adder",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1735163564880,
+      "tag": "20241225215244_curvy_toad_men",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1735418142037,
+      "tag": "20241228203542_harsh_pretty_boy",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1735588542374,
+      "tag": "20241230195542_sticky_omega_flight",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1735588741349,
+      "tag": "20241230195901_brave_mentallo",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1735589942282,
+      "tag": "20241230201902_reflective_tusk",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1735591116610,
+      "tag": "20241230203836_rare_post",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1735591172078,
+      "tag": "20241230203932_nervous_nocturne",
+      "breakpoints": true
+    }
+  ]
+}

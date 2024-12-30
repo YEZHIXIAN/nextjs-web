@@ -14,6 +14,8 @@ export const BackButton = (
 ) => {
   return (
     <Button
+      asChild
+      variant={"link"}
       className={"flex w-full gap-4"}
     >
       <Link aria-label={label} href={href}>
