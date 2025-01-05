@@ -1,6 +1,7 @@
 import {BackButton} from "@/components/auth/back-button";
 import Socials from "@/components/auth/socials";
 import {Card, CardContent, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
+import React from "react";
 
 type CardWrapperProps = {
   children: React.ReactNode;
@@ -23,7 +24,6 @@ export const AuthCard = (
 
   return (
     <Card>
-
       <CardHeader>
         <CardTitle>
           {cardTitle}

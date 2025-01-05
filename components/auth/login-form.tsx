@@ -1,10 +1,12 @@
 'use client'
 
 import {AuthCard} from "@/components/auth/auth-card";
+import {FormError} from "@/components/auth/form-error";
+import {FormSuccess} from "@/components/auth/form-success";
 import {Button} from "@/components/ui/button";
 import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
 import {cn} from "@/lib/utils";
-import {RegisterForm} from "@/types/login-schema";
+import {LoginSchema} from "@/types/login-schema";
 import {zodResolver} from "@hookform/resolvers/zod";
 import Link from "next/link";
 import {Input} from "@/components/ui/input";
@@ -17,7 +19,7 @@ import {useAction} from "next-safe-action/hooks"
 export const LoginForm = () => {
 
   const form = useForm({
-    resolver: zodResolver(RegisterForm),
+    resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: "",
       password: "",
@@ -25,13 +27,20 @@ export const LoginForm = () => {
   });
 
 
+  const [error, setError] = useState("")
+  const [success, setSuccess] = useState("")
   const {execute, status} = useAction(emailSignIn, {
     onSuccess(data) {
-      console.log(data)
+      if (data?.error) {
+        setError(data.error)
+      }
+      if (data?.success) {
+        setSuccess(data.success)
+      }
     }
   })
 
-  const onSubmit = (values: z.infer<typeof RegisterForm>) => {
+  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
     execute(values)
   }
 
@@ -84,6 +93,8 @@ export const LoginForm = () => {
                   </FormItem>
                 )}
               />
+              <FormSuccess message={success}/>
+              <FormError message={error}/>
               <Button size={"sm"} variant={"link"} asChild>
                 <Link href={"/auth/reset"}>Forgot your password</Link>
               </Button>

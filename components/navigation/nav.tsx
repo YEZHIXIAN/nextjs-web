@@ -6,34 +6,31 @@ import {LogIn} from "lucide-react";
 import Link from "next/link";
 
 export default async function Nav() {
-  const session = await auth();
+  const session = await auth()
+
   return (
     <header className={"py-8"}>
       <nav>
-        <ul className={"flex justify-between"}>
+        <ul className={"flex justify-between items-center"}>
           <li>
-              <Link href={"/"}>
-                <Logo />
-              </Link>
+            <Link href={"/"} aria-label={"logo"}>
+              <Logo/>
+            </Link>
           </li>
-          {
-            !session
-              ? (
-                <li>
-                  <Button asChild>
-                    <Link className={"flex gap-2"} href={"/auth/login"}>
-                      <LogIn/>
-                      Log In
-                    </Link>
-                  </Button>
-                </li>
-              )
-              : (
-                <li>
-                  <UserButton expires={session?.expires} user={session?.user}/>
-                </li>
-              )
-          }
+          {!session ? (
+            <li>
+              <Button asChild>
+                <Link className={"flex gap-2"} href={"/auth/login"}>
+                  <LogIn/>
+                  Log In
+                </Link>
+              </Button>
+            </li>
+          ) : (
+            <li>
+              <UserButton expires={session?.expires} user={session?.user}/>
+            </li>
+          )}
         </ul>
       </nav>
     </header>

@@ -1,3 +1,4 @@
+import {ThemeProvider} from "@/components/providers/theme-provider";
 import {cn} from "@/lib/utils";
 import type {Metadata} from "next";
 import "./globals.css";
@@ -16,10 +17,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
     <body className={cn("px-6 md:px-12")}>
-    <Nav/>
-    {children}
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange
+    >
+      <Nav/>
+      {children}
+    </ThemeProvider>
     </body>
     </html>
   );
