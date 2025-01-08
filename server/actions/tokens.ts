@@ -1,8 +1,9 @@
 "use server"
 
 import {db} from "@/server";
-import {emailTokens, users} from "@/server/schema";
+import {emailTokens, twoFactorTokens, users} from "@/server/schema";
 import {eq} from "drizzle-orm";
+import crypto from "crypto";
 
 export const generateEmailVerificationToken = async (email: string) => {
   const token = crypto.randomUUID()
@@ -25,12 +26,55 @@ export const generateEmailVerificationToken = async (email: string) => {
 export const getVerificationTokenByEmail = async (email: string) => {
   try {
     return await db.query.emailTokens.findFirst({
-      where: eq(emailTokens.token, email)
+      where: eq(emailTokens.email, email)
     })
   } catch (error) {
     console.log(error)
     return null
   }
+}
+
+export const getTwoFactorTokenByEmail = async (email: string) => {
+  try {
+    return await db.query.twoFactorTokens.findFirst({
+      where: eq(twoFactorTokens.email, email)
+    })
+  } catch (error) {
+    console.log(error)
+    return null
+  }
+}
+
+export const getTwoFactorTokenByToken = async (token: string) => {
+  try {
+    return await db.query.twoFactorTokens.findFirst({
+      where: eq(twoFactorTokens.token, token)
+    })
+  } catch (error) {
+    console.log(error)
+    return null
+  }
+}
+
+export const generateTwoFactorToken = async (email: string) => {
+
+  const token = crypto.randomInt(100_000, 999_999).toString()
+  const expires = new Date(new Date().getTime() + 1000 * 60 * 60)
+  const existingToken = await getTwoFactorTokenByEmail(email)
+
+  if (existingToken) {
+    await db
+      .delete(twoFactorTokens)
+      .where(eq(twoFactorTokens.email, email))
+  }
+
+  return db
+    .insert(twoFactorTokens)
+    .values({
+      email,
+      token,
+      expires,
+    }).returning()
 }
 
 export const newVerification = async (token: string) => {
@@ -63,3 +107,4 @@ export const newVerification = async (token: string) => {
 
   return {success: "Email verified!"}
 }
+

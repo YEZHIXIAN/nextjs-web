@@ -42,7 +42,10 @@ export const AuthCard = (
         )
       }
       <CardFooter>
-        <BackButton label={backButtonLabel} href={backButtonHref}/>
+        <BackButton
+          label={backButtonLabel}
+          href={backButtonHref}
+        />
       </CardFooter>
 
     </Card>

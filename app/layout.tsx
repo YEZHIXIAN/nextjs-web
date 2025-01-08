@@ -2,6 +2,7 @@ import {ThemeProvider} from "@/components/providers/theme-provider";
 import {cn} from "@/lib/utils";
 import type {Metadata} from "next";
 import "./globals.css";
+import { Toaster } from 'sonner';
 
 import Nav from "@/components/navigation/nav";
 import React from "react";
@@ -26,6 +27,7 @@ export default function RootLayout({
       disableTransitionOnChange
     >
       <Nav/>
+      <Toaster/>
       {children}
     </ThemeProvider>
     </body>

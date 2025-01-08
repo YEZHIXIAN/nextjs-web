@@ -24,3 +24,21 @@ export const sendVerificationEmail = async (email: string, token: string) => {
     return data
   }
 }
+
+export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
+
+  const { data, error } = await resend.emails.send({
+    from: 'Acme <onboarding@resend.dev>',
+    to: email,
+    subject: 'Front - Your Two Factor Token ^_^',
+    html: `<p>Your Confimation Code: ${token}</p>`,
+  });
+
+  if (error) {
+    return error
+  }
+
+  if (data) {
+    return data
+  }
+}

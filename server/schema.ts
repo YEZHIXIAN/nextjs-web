@@ -4,7 +4,7 @@ import {
   text,
   primaryKey,
   integer,
-  boolean, pgEnum,
+  boolean, pgEnum, serial, real,
 } from "drizzle-orm/pg-core"
 import type { AdapterAccountType } from "next-auth/adapters"
 import {createId} from "@paralleldrive/cuid2"
@@ -62,3 +62,27 @@ export const emailTokens = pgTable(
     }),
   })
 )
+
+export const twoFactorTokens = pgTable(
+  "two_factor_tokens",
+  {
+    id: text("id")
+      .notNull()
+      .$defaultFn(() => createId()),
+    token: text("token").notNull(),
+    expires: timestamp("expires", { mode: "date" }).notNull(),
+    email: text("email").notNull(),
+    userID: text("userID").references(() => users.id, { onDelete: "cascade" }),
+  },
+  (vt) => ({
+    compoundKey: primaryKey({ columns: [vt.id, vt.token] }),
+  })
+)
+
+export const products = pgTable("products", {
+  id: serial("id").primaryKey(),
+  description: text("description"),
+  title: text("title").notNull(),
+  created: timestamp("created").defaultNow(),
+  price: real("price").notNull(),
+})
