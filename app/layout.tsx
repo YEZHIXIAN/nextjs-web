@@ -1,8 +1,8 @@
 import {ThemeProvider} from "@/components/providers/theme-provider";
+import Toaster from "@/components/ui/toaster";
 import {cn} from "@/lib/utils";
 import type {Metadata} from "next";
 import "./globals.css";
-import { Toaster } from 'sonner';
 
 import Nav from "@/components/navigation/nav";
 import React from "react";
@@ -22,7 +22,7 @@ export default function RootLayout({
     <body className={cn("px-6 md:px-12")}>
     <ThemeProvider
       attribute="class"
-      defaultTheme="system"
+      defaultTheme="dark"
       enableSystem
       disableTransitionOnChange
     >

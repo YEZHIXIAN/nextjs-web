@@ -14,10 +14,20 @@ export const ourFileRouter = {
       maxFileSize: "4MB",
       maxFileCount: 1,
     },
-  })
-    .onUploadComplete(
-      async () => {}
-    ),
+  }).onUploadComplete(
+    async () => {}
+  ),
+
+  variantUploader: f({
+    image: {
+      maxFileSize: "4MB",
+      maxFileCount: 10,
+    }
+  }).onUploadComplete(
+    async () => {}
+  )
+
+
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;

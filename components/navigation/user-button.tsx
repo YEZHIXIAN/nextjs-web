@@ -38,7 +38,7 @@ export const UserButton = ({ user }: Session) => {
   }, [])
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger>
         <Avatar className="w-7 h-7">
           {user?.image && (

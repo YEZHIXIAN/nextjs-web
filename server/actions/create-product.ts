@@ -5,6 +5,7 @@ import { products } from "@/server/schema";
 import { ProductSchema } from "@/types/product-schema";
 import { eq } from "drizzle-orm";
 import { createSafeActionClient } from "next-safe-action";
+import { revalidatePath } from "next/cache";
 
 const action = createSafeActionClient()
 
@@ -26,7 +27,8 @@ export const createProduct = action(ProductSchema, async ({ description, price, 
         title
       }).where(eq(products.id, id))
 
-      return { success: `Product ${title} has been updated` }
+      revalidatePath("/dashboard/products")
+      return { success: `Product ${title} has been edited` }
 
     } else {
       await db.insert(products).values({
@@ -34,6 +36,8 @@ export const createProduct = action(ProductSchema, async ({ description, price, 
         price,
         title
       })
+
+      revalidatePath("/dashboard/products")
       return { success: `Product ${title} has been created"`}
     }
   }

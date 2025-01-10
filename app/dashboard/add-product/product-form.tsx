@@ -6,14 +6,16 @@ import { FormSuccess } from "@/components/auth/form-success";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createProduct } from "@/server/actions/create-product";
+import { getProduct } from "@/server/actions/get-product";
 import { ProductSchema } from "@/types/product-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DollarSign } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
+import {Card, CardContent, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -23,6 +25,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import { toast } from "sonner";
 
 
 export default function ProductForm() {
@@ -37,14 +40,45 @@ export default function ProductForm() {
   })
 
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const editMode = searchParams.get("id")
+  const checkProduct = async (id: number) => {
+    if (editMode) {
+      const { product, success, error } = await getProduct(id)
+      if (error) {
+        toast.error(error)
+        router.push("/dashboard/products")
+      }
+      if (success) {
+        const id = parseInt(editMode)
+        form.setValue("id", id)
+        form.setValue("title", product.title)
+        form.setValue("description", product.description || "")
+        form.setValue("price", product.price)
+
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (editMode) {
+      checkProduct(parseInt(editMode))
+    }
+  }, [])
 
   const {execute, status} = useAction(createProduct, {
     onSuccess: (data) => {
+      if (data?.error) {
+        toast.error(data.error)
+      }
       if (data?.success) {
         router.push("/dashboard/products")
+        toast.success(data.success)
       }
-      if (data?.error) {
-      }
+
+    },
+    onExecute: () => {
+      toast.loading(editMode ? "Editing Product" : "Creating Product")
     }
   })
 
@@ -54,10 +88,11 @@ export default function ProductForm() {
 
   return (
     <Card className={"mb-10"}>
+
       <CardHeader>
-        <CardTitle>Card Title</CardTitle>
-        <CardDescription>Card Description</CardDescription>
+        <CardTitle>{editMode ? <span>Edit Product</span> : <span>Create Product</span>}</CardTitle>
       </CardHeader>
+
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onsubmit)} className="space-y-8">
@@ -115,11 +150,14 @@ export default function ProductForm() {
             <FormError/>
             <Button
               disabled={status === "executing" || !form.formState.isValid || !form.formState.isDirty }
-              type="submit">Submit
+              type="submit"
+            >
+              {editMode ? "Save Changes" : "Create Product"}
             </Button>
           </form>
         </Form>
       </CardContent>
+
       <CardFooter>
       </CardFooter>
     </Card>
