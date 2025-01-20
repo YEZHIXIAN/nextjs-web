@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Full Stack E-Commerce Platform
+Welcome to my Full Stack E-Commerce Platform! This project showcases a modern e-commerce solution built with the latest technologies to ensure a fast, secure, and enjoyable shopping experience.
 
-## Getting Started
+Features
+Server-Side Rendering with Next.js 14.2 for improved SEO and performance.
+Responsive User Interface crafted with React, Tailwind CSS, and shadcn/ui.
+Secure Payment Processing integrated with Stripe Elements.
+User Authentication via Next Auth V5, offering multiple authentication methods.
+Real-Time Notifications using AWS SNS for login confirmations.
+Efficient Data Handling with Drizzle ORM and PostgreSQL on NeonDB.
+Search Functionality powered by Algolia for quick and accurate product searches.
+State Management with zustand for a clean and manageable state structure.
+Animations with Framer Motion for an engaging user experience.
+Form Handling with React-Hook-Form for smooth user input validation.
+Email Management streamlined with Resend for transactional emails.
 
-First, run the development server:
+Tech Stack
+Frontend:
+Next.js 14.2
+React
+Tailwind CSS
+shadcn/ui
+Framer Motion
+React-Hook-Form
 
-```bash
+Backend & Authentication:
+Next.js API Routes
+Next Auth V5
+
+Database:
+PostgreSQL with NeonDB for serverless database solutions
+Drizzle ORM
+
+Services:
+Stripe Elements
+Algolia Search
+AWS SNS
+Resend
+
+Getting Started
+Prerequisites
+Node.js (v14 or above) and npm
+PostgreSQL (or NeonDB for serverless)
+
+Installation
+Clone the repository:
+bash
+git clone [your-repository-url]
+cd full-stack-ecommerce
+Install dependencies:
+bash
+npm install
+Setup Environment Variables:
+Create a .env file in the project root:
+NEXTAUTH_SECRET=your-secret
+DATABASE_URL=postgresql://username:password@localhost:5432/database_name
+STRIPE_SECRET_KEY=your-stripe-secret-key
+AWS_ACCESS_KEY_ID=your-aws-access-key-id
+AWS_SECRET_ACCESS_KEY=your-aws-secret-access-key
+ALGOLIA_APP_ID=your-algolia-app-id
+ALGOLIA_API_KEY=your-algolia-api-key
+RESEND_API_KEY=your-resend-api-key
+Note: Replace placeholders with your actual credentials.
+Setup PostgreSQL:
+Ensure you have PostgreSQL running or NeonDB configured.
+Run migrations if using Drizzle ORM:
+bash
+npx drizzle-kit generate:pg
+Run the Development Server:
+bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Usage
+Access the platform at http://localhost:3000
+Use the admin panel to add products, manage users, etc. (details in the admin guide)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
