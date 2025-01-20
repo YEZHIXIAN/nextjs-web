@@ -3,9 +3,11 @@
 import { InputTags } from "@/app/dashboard/products/input-tags";
 import VariantImages from "@/app/dashboard/products/variant-images";
 import { VariantsWithImagesTags } from "@/lib/infer-type";
+import { createVariant } from "@/server/actions/create-variant";
 import { VariantSchema } from "@/types/variant-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import { useAction } from "next-safe-action/hooks";
+import React, { forwardRef, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -15,6 +17,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,21 +28,18 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import { deleteVariant } from "@/server/actions/delete-variant";
 import { Input } from "@/components/ui/input";
 
+type VariantProps = {
+  children: React.ReactNode
+  editMode: boolean
+  productID?: number
+  variant?: VariantsWithImagesTags
+}
 
-export const ProductVariant = (
-  {
-    editMode,
-    productID,
-    variant,
-    children
-  }: {
-    editMode: boolean,
-    productID?: number,
-    variant?: VariantsWithImagesTags,
-    children: React.ReactNode
-  }) => {
+export const ProductVariant = forwardRef<HTMLDivElement, VariantProps>(
+  ({ editMode, productID, variant, children }, ref ) => {
 
   const form = useForm<z.infer<typeof VariantSchema>>({
     resolver: zodResolver(VariantSchema),
@@ -54,12 +54,65 @@ export const ProductVariant = (
     }
   })
 
-  function onSubmit(values: z.infer<typeof VariantSchema>) {
-    console.log(values)
+  const [open, setOpen] = React.useState(false)
+
+  const setEdit = () => {
+    if (!editMode) {
+      form.reset()
+    } else {
+      form.setValue("editMode", true)
+      form.setValue("id", variant!.id)
+      form.setValue("productType", variant!.productType)
+      form.setValue("color", variant!.color)
+      form.setValue(
+        "tags",
+        variant!.variantTags.map((tag) => tag.tag)
+      )
+      form.setValue(
+        "variantImages",
+        variant!.variantImages.map((img) => ({
+          name: img.name,
+          size: img.size,
+          url: img.url
+        }))
+      )
+    }
   }
 
+  useEffect(() => {
+    setEdit()
+  }, [])
+
+  const { execute } = useAction(createVariant, {
+    onExecute() {
+      setOpen(false)
+    },
+
+    onSuccess() {
+      toast.success("Variant created")
+    },
+  })
+
+  function onSubmit(values: z.infer<typeof VariantSchema>) {
+    execute(values)
+  }
+
+  const variantAction = useAction(deleteVariant, {
+    onExecute() {
+      setOpen(false)
+    },
+    onSuccess(data) {
+      if (data?.error) {
+        toast.error(data.error)
+      }
+      if (data?.success) {
+        toast.success(data.success)
+      }
+    }
+  })
+
   return (
-    <Dialog modal={false}>
+    <Dialog modal={false} open={open} onOpenChange={setOpen}>
       <DialogTrigger>
         {children}
       </DialogTrigger>
@@ -83,7 +136,7 @@ export const ProductVariant = (
                   <FormControl>
                     <Input placeholder="pick a title for your variant" {...field} />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage/>
                 </FormItem>
               )}
             />
@@ -97,7 +150,7 @@ export const ProductVariant = (
                   <FormControl>
                     <Input type={"color"} {...field} />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage/>
                 </FormItem>
               )}
             />
@@ -111,21 +164,33 @@ export const ProductVariant = (
                   <FormControl>
                     <InputTags {...field} onChange={(e) => field.onChange(e)}/>
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage/>
                 </FormItem>
               )}
             />
 
             <VariantImages/>
-            {editMode && variant && (
-              <Button type={"button"} variant={"destructive"} onClick={(e) => e.preventDefault()}>
-                Delete Variant
-              </Button>
-            )}
-            <Button type="submit">{editMode ? "Update Variant" : "Create Variant"}</Button>
+            <div className={"flex gap-4 items-center"}>
+              {editMode && variant && (
+                <Button
+                  type={"button"}
+                  variant={"destructive"}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    variantAction.execute({ id: variant.id })
+                  }}>
+
+                  Delete Variant
+                </Button>
+              )}
+              <Button type="submit">{editMode ? "Update Variant" : "Create Variant"}</Button>
+            </div>
           </form>
         </Form>
       </DialogContent>
     </Dialog>
   )
 }
+)
+
+ProductVariant.displayName = "ProductVariant"

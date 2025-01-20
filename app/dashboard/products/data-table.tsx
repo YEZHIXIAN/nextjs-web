@@ -90,6 +90,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                   </TableRow>
                 ))}
               </TableHeader>
+
               <TableBody>
                 {table.getRowModel().rows?.length ? (
                   table.getRowModel().rows.map((row) => (

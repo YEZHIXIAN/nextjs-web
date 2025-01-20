@@ -15,7 +15,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import {Card, CardContent, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -66,7 +66,7 @@ export default function ProductForm() {
     }
   }, [])
 
-  const {execute, status} = useAction(createProduct, {
+  const { execute, status } = useAction(createProduct, {
     onSuccess: (data) => {
       if (data?.error) {
         toast.error(data.error)
@@ -77,9 +77,6 @@ export default function ProductForm() {
       }
 
     },
-    onExecute: () => {
-      toast.loading(editMode ? "Editing Product" : "Creating Product")
-    }
   })
 
   const onsubmit = (values: z.infer<typeof ProductSchema>) => {
@@ -108,7 +105,7 @@ export default function ProductForm() {
                   </FormControl>
                   <FormDescription>
                   </FormDescription>
-                  <FormMessage />
+                  <FormMessage/>
                 </FormItem>
               )}
             />
@@ -116,7 +113,7 @@ export default function ProductForm() {
             <FormField
               control={form.control}
               name="description"
-              render={({field}) => (
+              render={({ field }) => (
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
@@ -124,7 +121,7 @@ export default function ProductForm() {
                   </FormControl>
                   <FormDescription>
                   </FormDescription>
-                  <FormMessage />
+                  <FormMessage/>
                 </FormItem>
               )}
             />
@@ -141,7 +138,7 @@ export default function ProductForm() {
                       <Input {...field} type={"number"} placeholder="price in USD" min={0}/>
                     </div>
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage/>
                 </FormItem>
               )}
             />
@@ -149,7 +146,7 @@ export default function ProductForm() {
             <FormSuccess/>
             <FormError/>
             <Button
-              disabled={status === "executing" || !form.formState.isValid || !form.formState.isDirty }
+              disabled={status === "executing" || !form.formState.isValid || !form.formState.isDirty}
               type="submit"
             >
               {editMode ? "Save Changes" : "Create Product"}

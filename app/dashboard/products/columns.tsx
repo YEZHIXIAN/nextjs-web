@@ -23,7 +23,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-export type ProductColumn = {
+type ProductColumn = {
   title: string
   price: number
   image: string
@@ -40,9 +40,6 @@ const ActionCell = ({ row }: { row: Row<ProductColumn> }) => {
       if (data?.success) {
         toast.success(data.success)
       }
-    },
-    onExecute: () => {
-      toast.loading("Deleting Product")
     },
   })
 
@@ -90,7 +87,7 @@ export const columns: ColumnDef<ProductColumn>[] = [
       const variants = row.getValue("variants") as VariantsWithImagesTags[]
 
       return (
-        <div>
+        <div className={"flex gap-1 items-center"}>
           {variants.map((variant) => (
             <div key={variant.id}>
               <TooltipProvider>
@@ -105,13 +102,11 @@ export const columns: ColumnDef<ProductColumn>[] = [
                         className={"w-5 h-5 rounded-full"}
                         key={variant.id}
                         style={{ background: variant.color }}
-                      >
-
-                      </div>
+                      />
                     </ProductVariant>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>{variant.productType}</p>
+                    {variant.productType}
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -121,7 +116,7 @@ export const columns: ColumnDef<ProductColumn>[] = [
             <Tooltip>
               <TooltipTrigger asChild>
                 <span>
-                  <ProductVariant editMode={false}>
+                  <ProductVariant productID={row.original.id} editMode={false}>
                     <PlusCircle className={"h-4 w-4"}/>
                   </ProductVariant>
                 </span>

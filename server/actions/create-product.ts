@@ -38,7 +38,7 @@ export const createProduct = action(ProductSchema, async ({ description, price, 
       })
 
       revalidatePath("/dashboard/products")
-      return { success: `Product ${title} has been created"`}
+      return { success: `Product ${title} has been created`}
     }
   }
   catch (error) {

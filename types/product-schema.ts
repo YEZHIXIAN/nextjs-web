@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const ProductSchema = z.object({
   id: z.number().optional(),
-  title: z.string().min(5, {
+  title: z.string().min(1, {
     message: "Title must be at least 5 characters",
   }),
   description: z.string().min(40, {
@@ -10,5 +10,5 @@ export const ProductSchema = z.object({
   }),
   price: z.coerce
     .number({ invalid_type_error: "Price must be a number" })
-    .positive({ message: "Price must be a positive number" }),
+    .nonnegative({ message: "Price must be a non-negative number" }),
 })

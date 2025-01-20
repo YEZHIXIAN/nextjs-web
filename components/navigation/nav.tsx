@@ -1,8 +1,7 @@
-import Logo from "@/components/navigation/logo";
 import {UserButton} from "@/components/navigation/user-button";
 import {Button} from "@/components/ui/button";
 import {auth} from "@/server/auth"
-import {LogIn} from "lucide-react";
+import { HomeIcon, LogIn } from "lucide-react";
 import Link from "next/link";
 
 export default async function Nav() {
@@ -14,7 +13,11 @@ export default async function Nav() {
         <ul className={"flex justify-between items-center"}>
           <li>
             <Link href={"/"} aria-label={"logo"}>
-              <Logo/>
+              <Button className={"flex items-center"}>
+                <HomeIcon/>
+                <p className={"text-sm"}>Home</p>
+                <p className={"text-xs"}>(≧▽≦)</p>
+              </Button>
             </Link>
           </li>
           {!session ? (
