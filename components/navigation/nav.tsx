@@ -20,6 +20,7 @@ export default async function Nav() {
                 <p className={"text-xs"}>(≧▽≦)</p>
               </Button>
             </Link>
+
             <CartDrawer/>
 
           </li>

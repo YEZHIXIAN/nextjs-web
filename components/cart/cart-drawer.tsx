@@ -1,7 +1,8 @@
 "use client"
 
+import CartItems from "@/components/cart/cart-items";
 import { Button } from "@/components/ui/button";
-import { Drawer, DrawerContent, DrawerHeader, DrawerTrigger } from "@/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
 import { useCartStore } from "@/lib/client-store";
 import { ShoppingCart } from "lucide-react";
 
@@ -9,12 +10,12 @@ export default function CartDrawer() {
   const { cart } = useCartStore()
 
   return (
-    <Drawer>
-      <DrawerTrigger>
+    <Drawer modal={false}>
+      <DrawerTrigger asChild>
         <Button variant={"ghost"} className={"group flex items-center"}>
           <div className={"relative"}>
             <ShoppingCart className={"group-hover:translate-x-0.5 transition-all duration-600 ease-in-out"}/>
-            {cart.length >= 0 && (
+            {cart.length > 0 && (
               <span
                 className="absolute -top-0.5 -right-1 bg-red-500 rounded-full w-2 h-2 group-hover:translate-x-0.5 transition-all duration-600 ease-in-out"
               />
@@ -25,10 +26,15 @@ export default function CartDrawer() {
           <p className={"text-xs"}>(´･ω･)っ</p>
         </Button>
       </DrawerTrigger>
-      <DrawerContent>
+
+      <DrawerContent className={"fixed bottom-0 left-0 max-h-[70vh] min-h-[50vh]"}>
+        <DrawerTitle className={"flex justify-between"}>Cart</DrawerTitle>
         <DrawerHeader>
-          Cart
+
         </DrawerHeader>
+        <div className={"overflow-auto p-4"}>
+          <CartItems />
+        </div>
       </DrawerContent>
     </Drawer>
   )

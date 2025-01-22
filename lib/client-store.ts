@@ -30,8 +30,7 @@ export const useCartStore = create<CartState>((set) => ({
       )
 
       if (existingItem) {
-        return {
-          cart: state.cart.map((cartItem) =>
+        const updatedCart = state.cart.map((cartItem) =>
             cartItem.id === item.id && cartItem.variant.variantID === item.variant.variantID
               ? {
                 ...cartItem,
@@ -42,7 +41,7 @@ export const useCartStore = create<CartState>((set) => ({
               }
               : cartItem
           )
-        }
+        return { cart: updatedCart.filter((item) => item.variant.quantity > 0) }
       } else {
         return { cart: [...state.cart, item] };
       }
