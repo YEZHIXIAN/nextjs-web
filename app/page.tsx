@@ -13,7 +13,7 @@ export default async function Home() {
     orderBy: (productVariants, { desc }) => [desc(productVariants.id)]
   })
   return (
-    <main className={""}>
+    <main className={"mb-10"}>
       <Products variants={data}/>
     </main>
   )

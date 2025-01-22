@@ -1,3 +1,4 @@
+import CartDrawer from "@/components/cart/cart-drawer";
 import {UserButton} from "@/components/navigation/user-button";
 import {Button} from "@/components/ui/button";
 import {auth} from "@/server/auth"
@@ -11,14 +12,16 @@ export default async function Nav() {
     <header className={"py-8"}>
       <nav>
         <ul className={"flex justify-between items-center"}>
-          <li>
+          <li className={"flex flex-row"}>
             <Link href={"/"} aria-label={"logo"}>
-              <Button className={"flex items-center"}>
-                <HomeIcon/>
+              <Button variant={"ghost"} className={"group flex items-center"}>
+                <HomeIcon className={"group-hover:scale-90 transition-all duration-300 ease-in-out"}/>
                 <p className={"text-sm"}>Home</p>
                 <p className={"text-xs"}>(≧▽≦)</p>
               </Button>
             </Link>
+            <CartDrawer/>
+
           </li>
           {!session ? (
             <li>
@@ -30,7 +33,7 @@ export default async function Nav() {
               </Button>
             </li>
           ) : (
-            <li>
+            <li className={"flex items-center gap-3"}>
               <UserButton expires={session?.expires} user={session?.user}/>
             </li>
           )}

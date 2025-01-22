@@ -13,23 +13,16 @@ type VariantTypes = {
 
 export default function Products({ variants }: VariantTypes) {
   return (
-    <main className={"grid sm:grid-cols-1 md:grid-cols-2 gap-12 lg:grid-cols-3"}>
+    <main className={"grid sm:grid-cols-1 md:grid-cols-2 gap-12 lg:grid-cols-3 pb-6"}>
       {
         variants.map((variant, index) => (
           <Link
             className={"py-2"}
             key={index}
-            href={`/products/${variant.id}
-              ?id=${variant.id}
-              &productID=${variant.productID}
-              &price=${variant.products.price}
-              $title=${variant.products.title}
-              $type=${variant.productType}
-              &image=${variant.variantImages[0].url}`
-            }
+            href={`/products/${variant.id}?id=${variant.id}&productID=${variant.productID}&price=${variant.products.price}&title=${variant.products.title}&type=${variant.productType}&image=${variant.variantImages[0].url}`}
           >
             <Image
-              className={"rounded-md pb-2"}
+              className={"rounded-md pb-2 h-full w-full object-cover"}
               src={variant.variantImages[0].url}
               width={720}
               height={480}

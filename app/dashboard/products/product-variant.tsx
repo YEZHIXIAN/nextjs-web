@@ -39,158 +39,162 @@ type VariantProps = {
 }
 
 export const ProductVariant = forwardRef<HTMLDivElement, VariantProps>(
-  ({ editMode, productID, variant, children }, ref ) => {
+  ({ editMode, productID, variant, children }, ref) => {
 
-  const form = useForm<z.infer<typeof VariantSchema>>({
-    resolver: zodResolver(VariantSchema),
-    defaultValues: {
-      tags: [],
-      variantImages: [],
-      color: "#000000",
-      editMode,
-      id: undefined,
-      productID,
-      productType: "Black Notebook",
-    }
-  })
-
-  const [open, setOpen] = React.useState(false)
-
-  const setEdit = () => {
-    if (!editMode) {
-      form.reset()
-    } else {
-      form.setValue("editMode", true)
-      form.setValue("id", variant!.id)
-      form.setValue("productType", variant!.productType)
-      form.setValue("color", variant!.color)
-      form.setValue(
-        "tags",
-        variant!.variantTags.map((tag) => tag.tag)
-      )
-      form.setValue(
-        "variantImages",
-        variant!.variantImages.map((img) => ({
-          name: img.name,
-          size: img.size,
-          url: img.url
-        }))
-      )
-    }
-  }
-
-  useEffect(() => {
-    setEdit()
-  }, [])
-
-  const { execute } = useAction(createVariant, {
-    onExecute() {
-      setOpen(false)
-    },
-
-    onSuccess() {
-      toast.success("Variant created")
-    },
-  })
-
-  function onSubmit(values: z.infer<typeof VariantSchema>) {
-    execute(values)
-  }
-
-  const variantAction = useAction(deleteVariant, {
-    onExecute() {
-      setOpen(false)
-    },
-    onSuccess(data) {
-      if (data?.error) {
-        toast.error(data.error)
+    const form = useForm<z.infer<typeof VariantSchema>>({
+      resolver: zodResolver(VariantSchema),
+      defaultValues: {
+        tags: [],
+        variantImages: [],
+        color: "#000000",
+        editMode,
+        id: undefined,
+        productID,
+        productType: "Black Notebook",
       }
-      if (data?.success) {
-        toast.success(data.success)
+    })
+
+    const [open, setOpen] = React.useState(false)
+
+    const setEdit = () => {
+      if (!editMode) {
+        form.reset()
+      } else {
+        form.setValue("editMode", true)
+        form.setValue("id", variant!.id)
+        form.setValue("productType", variant!.productType)
+        form.setValue("color", variant!.color)
+        form.setValue(
+          "tags",
+          variant!.variantTags.map((tag) => tag.tag)
+        )
+        form.setValue(
+          "variantImages",
+          variant!.variantImages.map((img) => ({
+            name: img.name,
+            size: img.size,
+            url: img.url
+          }))
+        )
       }
     }
-  })
 
-  return (
-    <Dialog modal={false} open={open} onOpenChange={setOpen}>
-      <DialogTrigger>
-        {children}
-      </DialogTrigger>
+    useEffect(() => {
+      setEdit()
+    }, [])
 
-      <DialogContent className={"lg:max-w-screen-lg max-h-[860px] overflow-auto"}>
-        <DialogHeader>
-          <DialogTitle>{editMode ? "Edit" : "Create"} your variant</DialogTitle>
-          <DialogDescription>
-            Manage your product variants here.
-          </DialogDescription>
-        </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+    const { execute } = useAction(createVariant, {
+      onExecute() {
+        setOpen(false)
+      },
 
-            <FormField
-              control={form.control}
-              name="productType"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Variant Title</FormLabel>
-                  <FormControl>
-                    <Input placeholder="pick a title for your variant" {...field} />
-                  </FormControl>
-                  <FormMessage/>
-                </FormItem>
-              )}
-            />
+      onSuccess() {
+        if (editMode) {
+          toast.success("Variant Updated")
+        } else {
+          toast.success("Variant Created")
+        }
+      },
+    })
 
-            <FormField
-              control={form.control}
-              name="color"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Variant Color</FormLabel>
-                  <FormControl>
-                    <Input type={"color"} {...field} />
-                  </FormControl>
-                  <FormMessage/>
-                </FormItem>
-              )}
-            />
+    function onSubmit(values: z.infer<typeof VariantSchema>) {
+      execute(values)
+    }
 
-            <FormField
-              control={form.control}
-              name="tags"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Variant Tags</FormLabel>
-                  <FormControl>
-                    <InputTags {...field} onChange={(e) => field.onChange(e)}/>
-                  </FormControl>
-                  <FormMessage/>
-                </FormItem>
-              )}
-            />
+    const variantAction = useAction(deleteVariant, {
+      onExecute() {
+        setOpen(false)
+      },
+      onSuccess(data) {
+        if (data?.error) {
+          toast.error(data.error)
+        }
+        if (data?.success) {
+          toast.success(data.success)
+        }
+      }
+    })
 
-            <VariantImages/>
-            <div className={"flex gap-4 items-center"}>
-              {editMode && variant && (
-                <Button
-                  type={"button"}
-                  variant={"destructive"}
-                  onClick={(e) => {
-                    e.preventDefault()
-                    variantAction.execute({ id: variant.id })
-                  }}>
+    return (
+      <Dialog modal={false} open={open} onOpenChange={setOpen}>
+        <DialogTrigger>
+          {children}
+        </DialogTrigger>
 
-                  Delete Variant
-                </Button>
-              )}
-              <Button type="submit">{editMode ? "Update Variant" : "Create Variant"}</Button>
-            </div>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
-  )
-}
+        <DialogContent className={"lg:max-w-screen-lg max-h-[860px] overflow-auto"}>
+          <DialogHeader>
+            <DialogTitle>{editMode ? "Edit" : "Create"} your variant</DialogTitle>
+            <DialogDescription>
+              Manage your product variants here.
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+
+              <FormField
+                control={form.control}
+                name="productType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Variant Title</FormLabel>
+                    <FormControl>
+                      <Input placeholder="pick a title for your variant" {...field} />
+                    </FormControl>
+                    <FormMessage/>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="color"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Variant Color</FormLabel>
+                    <FormControl>
+                      <Input type={"color"} {...field} />
+                    </FormControl>
+                    <FormMessage/>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="tags"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Variant Tags</FormLabel>
+                    <FormControl>
+                      <InputTags {...field} onChange={(e) => field.onChange(e)}/>
+                    </FormControl>
+                    <FormMessage/>
+                  </FormItem>
+                )}
+              />
+
+              <VariantImages/>
+              <div className={"flex gap-4 items-center"}>
+                {editMode && variant && (
+                  <Button
+                    type={"button"}
+                    variant={"destructive"}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      variantAction.execute({ id: variant.id })
+                    }}>
+
+                    Delete Variant
+                  </Button>
+                )}
+                <Button type="submit">{editMode ? "Update Variant" : "Create Variant"}</Button>
+              </div>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+    )
+  }
 )
 
 ProductVariant.displayName = "ProductVariant"
