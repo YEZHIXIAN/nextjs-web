@@ -11,7 +11,7 @@ import { db } from "@/server";
 import { productVariants } from "@/server/schema";
 import { eq } from "drizzle-orm";
 
-
+// Generate static params for all product variants
 export async function generateStaticParams() {
   const data = await db.query.productVariants.findMany({
     with: {
@@ -20,17 +20,19 @@ export async function generateStaticParams() {
       products: true,
     },
     orderBy: (productVariants, { desc }) => [desc(productVariants.id)],
-  })
+  });
 
-  if (data) {
-    return data.map((variant) => ({ slug: variant.id.toString() }))
-  }
-
-  return []
-
+  return data ? data.map((variant) => ({ slug: variant.id.toString() })) : [];
 }
 
-export default async function Page({ params } : { params : { slug : string } }) {
+// Define the props type for the Page component
+interface PageProps {
+  params: {
+    slug: string;
+  };
+}
+
+export default async function Page({ params }: PageProps) {
   const variant = await db.query.productVariants.findFirst({
     where: eq(productVariants.id, Number(params.slug)),
     with: {
@@ -41,50 +43,49 @@ export default async function Page({ params } : { params : { slug : string } }) 
             with: {
               variantImages: true,
               variantTags: true,
-            }
-          }
-        }
-      }
-    }
-  })
+            },
+          },
+        },
+      },
+    },
+  });
 
   if (!variant) {
-    return <div>Item Not found</div>
+    return <div>Item Not found</div>;
   }
 
-  const reviewAverage = getReviewAverage(variant.products.reviews.map((review) => review.rating))
-
+  const reviewAverage = getReviewAverage(variant.products.reviews.map((review) => review.rating));
 
   return (
     <main>
-      <section className={"flex flex-col lg:flex-row gap-8"}>
-        <div className={"flex-1"}>
-          <ProductShowcase variants={variant.products.productVariants}/>
+      <section className="flex flex-col lg:flex-row gap-8">
+        <div className="flex-1">
+          <ProductShowcase variants={variant.products.productVariants} />
         </div>
 
-        <div className={"flex gap-2 flex-col flex-1"}>
-          <h2 className={"text-2xl font-bold"}>{variant.products.title}</h2>
+        <div className="flex gap-2 flex-col flex-1">
+          <h2 className="text-2xl font-bold">{variant.products.title}</h2>
 
-          <div className={"text-sm"}>
-            <ProductType variants={variant?.products.productVariants}/>
+          <div className="text-sm">
+            <ProductType variants={variant?.products.productVariants} />
           </div>
 
-          <Stars rating={reviewAverage} totalReviews={variant.products.reviews.length}/>
+          <Stars rating={reviewAverage} totalReviews={variant.products.reviews.length} />
 
-          <Separator className={"my-2"}/>
+          <Separator className="my-2" />
 
-          <p className={"text-xl font-bold"}>
+          <p className="text-xl font-bold">
             {formatPrice(variant.products.price)}
           </p>
 
           <div
-            className={"text-sm"}
-            dangerouslySetInnerHTML={{ __html: variant.products.description! }}>
-          </div>
+            className="text-sm"
+            dangerouslySetInnerHTML={{ __html: variant.products.description ?? '' }}
+          />
 
-          <p className={"text-secondary-foreground pt-2 text-sm font-bold"}>Variants</p>
+          <p className="text-secondary-foreground pt-2 text-sm font-bold">Variants</p>
 
-          <div className={"flex gap-4"}>
+          <div className="flex gap-4">
             {variant.products.productVariants.map((productVariant) => (
               <ProductPick
                 key={productVariant.id}
@@ -94,18 +95,17 @@ export default async function Page({ params } : { params : { slug : string } }) 
                 color={productVariant.color}
                 price={variant.products.price}
                 title={variant.products.title}
-                image={productVariant.variantImages[0].url}
+                image={productVariant.variantImages[0]?.url}
               />
             ))}
           </div>
-          <AddCart/>
+          <AddCart />
 
           <div>
-            <Reviews productID={variant.productID}/>
+            <Reviews productID={variant.productID} />
           </div>
-
         </div>
       </section>
     </main>
-  )
+  );
 }
