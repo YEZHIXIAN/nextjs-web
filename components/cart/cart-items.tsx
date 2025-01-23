@@ -1,7 +1,6 @@
 "use client"
 
 import { Button } from "@/components/ui/button";
-import { DrawerTitle } from "@/components/ui/drawer";
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/ui/table";
 import { useCartStore } from "@/lib/client-store";
 import formatPrice from "@/lib/format-price";

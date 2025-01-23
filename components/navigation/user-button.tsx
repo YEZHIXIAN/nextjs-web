@@ -15,14 +15,14 @@ import { useTheme } from "next-themes";
 import Image from "next/image";
 import { Switch } from "@/components/ui/switch"
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export const UserButton = ({ user }: Session) => {
   const { setTheme, theme } = useTheme()
   const [checked, setChecked] = useState(false)
   const router = useRouter()
 
-  function setSwitchState() {
+  const setSwitchState = useCallback(()=> {
     switch (theme) {
       case "dark":
         return setChecked(true)
@@ -31,11 +31,11 @@ export const UserButton = ({ user }: Session) => {
       case "system":
         return setChecked(false)
     }
-  }
+  }, [theme])
 
   useEffect(() => {
     setSwitchState()
-  }, [])
+  }, [setSwitchState])
 
   return (
     <DropdownMenu modal={false}>

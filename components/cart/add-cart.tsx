@@ -8,7 +8,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 export default function AddCart() {
-  const { cart, addToCart } = useCartStore()
+  const { addToCart } = useCartStore()
   const [quantity, setQuantity] = useState(1)
   const params = useSearchParams()
   const id = Number(params.get("id"))

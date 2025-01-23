@@ -9,7 +9,7 @@ import { useCartStore } from "@/lib/client-store";
 import { ShoppingCart } from "lucide-react";
 
 export default function CartDrawer() {
-  const { cart, checkoutProgress } = useCartStore()
+  const { cart, checkoutProgress, setCheckoutProgress } = useCartStore()
 
   return (
     <Drawer modal={false}>
@@ -34,6 +34,11 @@ export default function CartDrawer() {
           <CartMessage/>
           {checkoutProgress === "cart-page" && <CartItems />}
           {checkoutProgress === "payment-page" && <Payment />}
+          {checkoutProgress === "confirmation-page" && (
+            <div onClick={() => setCheckoutProgress("cart-page")}>
+              Confirmation Page
+            </div>
+          )}
         </div>
       </DrawerContent>
     </Drawer>

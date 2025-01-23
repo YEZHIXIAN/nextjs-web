@@ -1,7 +1,6 @@
 "use client"
 
 import { useCartStore } from "@/lib/client-store"
-import { createOrder } from "@/server/actions/create-order";
 import {
   AddressElement,
   PaymentElement,
@@ -9,33 +8,31 @@ import {
   useStripe,
 } from "@stripe/react-stripe-js"
 import { Button } from "../ui/button"
-import { useState } from "react"
+import React, { useState } from "react"
 import { createPaymentIntent } from "@/server/actions/create-payment-intent"
 import { useAction } from "next-safe-action/hooks"
+import { createOrder } from "@/server/actions/create-order"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 
 export default function PaymentForm({ totalPrice }: { totalPrice: number }) {
   const stripe = useStripe()
   const elements = useElements()
-  const { cart } = useCartStore()
+  const { cart, setCheckoutProgress } = useCartStore()
   const [isLoading, setIsLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState("")
   const router = useRouter()
-
   const { execute } = useAction(createOrder, {
-    onSuccess: (data) => {
-      if (data.error) {
-        toast.error(data.error)
+    onSuccess: ({success, error} ) => {
+      if (error) {
+        toast.error(error)
       }
-      if (data.success) {
+      if (success) {
         setIsLoading(false)
-        toast.success(data.success)
+        toast.success(success)
+        setCheckoutProgress("confirmation-page")
       }
     },
   })
-
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -46,7 +43,6 @@ export default function PaymentForm({ totalPrice }: { totalPrice: number }) {
     }
     const { error: submitError } = await elements.submit()
     if (submitError) {
-      setErrorMessage(submitError.message!)
       setIsLoading(false)
       return
     }
@@ -62,10 +58,8 @@ export default function PaymentForm({ totalPrice }: { totalPrice: number }) {
       })),
     })
     if (data?.error) {
-      setErrorMessage(data.error)
       setIsLoading(false)
       router.push("/auth/login")
-      // setCartOpen(false)
       return
     }
     if (data?.success) {
@@ -74,12 +68,12 @@ export default function PaymentForm({ totalPrice }: { totalPrice: number }) {
         clientSecret: data.success.clientSecretID!,
         redirect: "if_required",
         confirmParams: {
-          return_url: "http://localhost:3000/success",
+          return_url: "http://localhost:3000",
           receipt_email: data.success.user as string,
         },
       })
+
       if (error) {
-        setErrorMessage(error.message!)
         setIsLoading(false)
         return
       } else {
@@ -101,9 +95,9 @@ export default function PaymentForm({ totalPrice }: { totalPrice: number }) {
   return (
     <form onSubmit={handleSubmit}>
       <PaymentElement />
-      <AddressElement className={"pt-3"} options={{ mode: "shipping" }} />
+      <AddressElement options={{ mode: "shipping" }} />
       <Button
-        className="my-8 w-full"
+        className="my-4 w-full"
         disabled={!stripe || !elements || isLoading}
       >
         {isLoading ? "Processing..." : "Pay now"}

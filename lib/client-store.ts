@@ -19,6 +19,7 @@ export type CartState = {
   addToCart : (item : CartItem) => void,
   checkoutProgress: "cart-page" | "payment-page" | "confirmation-page",
   setCheckoutProgress: (val: "cart-page" | "payment-page" | "confirmation-page") => void,
+  clearCart : () => void,
 
 }
 
@@ -27,6 +28,7 @@ export const useCartStore = create<CartState>()(
     (set) => ({
         cart: [],
         checkoutProgress: "cart-page",
+        clearCart: () => set({ cart: [] }),
         setCheckoutProgress:  (val) => set({ checkoutProgress: val }),
         addToCart: (item) => set(
           (state) => {

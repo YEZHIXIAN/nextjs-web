@@ -40,7 +40,7 @@ type VariantProps = {
 
 export const ProductVariant = forwardRef<HTMLDivElement, VariantProps>(
   ({ editMode, productID, variant, children }, ref) => {
-
+    console.log(ref)
     const form = useForm<z.infer<typeof VariantSchema>>({
       resolver: zodResolver(VariantSchema),
       defaultValues: {

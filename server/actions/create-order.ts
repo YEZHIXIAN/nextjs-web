@@ -3,14 +3,17 @@
 import { db } from "@/server";
 import { auth } from "@/server/auth";
 import { orderProduct, orders } from "@/server/schema";
-import { orderSchema } from "@/types/order-schema";
+import { createOrderSchema } from "@/types/order-schema";
 import { createSafeActionClient } from "next-safe-action";
+import { z } from "zod";
+
 
 const action = createSafeActionClient()
 
 export const createOrder = action(
-  orderSchema,
-  async ({ products, status, total }) => {
+  createOrderSchema,
+  async ({ total, status, paymentIntentID, products } : z.infer<typeof createOrderSchema>) => {
+    console.log("Creating order")
     const user = await auth()
     if (!user) return { error: "You must be logged in to create an order" }
 
@@ -20,6 +23,7 @@ export const createOrder = action(
         .values({
           status,
           total,
+          paymentIntentID,
           userID: user.user.id
         }).returning()
 
