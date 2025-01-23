@@ -1,13 +1,15 @@
 "use client"
 
 import CartItems from "@/components/cart/cart-items";
+import CartMessage from "@/components/cart/cart-message";
+import Payment from "@/components/cart/payment";
 import { Button } from "@/components/ui/button";
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { useCartStore } from "@/lib/client-store";
 import { ShoppingCart } from "lucide-react";
 
 export default function CartDrawer() {
-  const { cart } = useCartStore()
+  const { cart, checkoutProgress } = useCartStore()
 
   return (
     <Drawer modal={false}>
@@ -28,12 +30,10 @@ export default function CartDrawer() {
       </DrawerTrigger>
 
       <DrawerContent className={"fixed bottom-0 left-0 max-h-[70vh] min-h-[50vh]"}>
-        <DrawerTitle className={"flex justify-between"}>Cart</DrawerTitle>
-        <DrawerHeader>
-
-        </DrawerHeader>
         <div className={"overflow-auto p-4"}>
-          <CartItems />
+          <CartMessage/>
+          {checkoutProgress === "cart-page" && <CartItems />}
+          {checkoutProgress === "payment-page" && <Payment />}
         </div>
       </DrawerContent>
     </Drawer>

@@ -1,5 +1,7 @@
 "use client"
 
+import { Button } from "@/components/ui/button";
+import { DrawerTitle } from "@/components/ui/drawer";
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/ui/table";
 import { useCartStore } from "@/lib/client-store";
 import formatPrice from "@/lib/format-price";
@@ -13,10 +15,10 @@ import emptyCart from "@/public/empty-box.json"
 import { createId } from "@paralleldrive/cuid2"
 
 export default function CartItems() {
-  const { cart, addToCart } = useCartStore()
+  const { cart, addToCart, setCheckoutProgress } = useCartStore()
 
   const totalPrice = useMemo(() => {
-    return cart.reduce((acc, item) => acc + item.price!, 0)
+    return cart.reduce((acc, item) => acc + item.price * item.variant.quantity, 0)
   }, [cart])
 
   const priceInLetters = useMemo(() => {
@@ -26,23 +28,45 @@ export default function CartItems() {
   }, [totalPrice])
 
   return (
-    <motion.div>
+
+    <motion.div className={"flex flex-col items-center"}>
+      <motion.div className={"flex items-center justify-center mb-4"}>
+        <span className={"text-md"}>Total: $</span>
+        <AnimatePresence mode={"popLayout"}>
+          {priceInLetters.map(
+            (letter, i) => (
+              <motion.div key={letter.id} className={""}>
+                <motion.span
+                  initial={{ y: 10 }}
+                  animate={{ y: 0 }}
+                  exit={{ y: -10 }}
+                  transition={{ delay: i * 0.1 }}
+                  className={"text-md inline-block"}
+                >
+                  {letter.letter}
+                </motion.span>
+
+              </motion.div>
+            )
+          )}
+        </AnimatePresence>
+      </motion.div>
+
       {cart.length === 0
         ? (
           <div className={"flex-col w-full flex items-center justify-center"}>
             <motion.div
               animate={{ opacity: 1 }}
               initial={{ opacity: 0 }}
-              transition={{ delay: 0.3}}
+              transition={{ delay: 0.3 }}
             >
-              <h2 className={"text-2xl text-muted-foreground"}>Empty!</h2>
-              <Lottie className={"h-64"} animationData={emptyCart} />
+              <Lottie className={"h-64"} animationData={emptyCart}/>
             </motion.div>
           </div>
         )
         : (
-          <div>
-            <Table>
+          <div className={"h-88 w-full overflow-y-auto"}>
+            <Table className={"max-w-2xl mx-auto"}>
               <TableHeader>
                 <TableRow>
                   <TableCell>Product</TableCell>
@@ -68,7 +92,6 @@ export default function CartItems() {
                           height={48}
                         />
                       </TableCell>
-                      <TableCell className={"pl-2"}>{item.variant.quantity}</TableCell>
                       <TableCell>
                         <div className={"flex items-center justify-between"}>
                           <MinusCircle
@@ -109,36 +132,17 @@ export default function CartItems() {
               </TableBody>
             </Table>
           </div>
-        )}
+        )
+      }
 
-      <motion.div
-        className={"flex items-center justify-center"}
-      >
-        <span className={"text-md"}>
-          Total: $
-        </span>
-
-        <AnimatePresence mode={"popLayout"}>
-          {priceInLetters.map(
-            (letter, i) => (
-              <motion.div key={letter.id} className={""}>
-                <motion.span
-                  initial={{y: 20}}
-                  animate={{y: 0}}
-                  exit={{y: -20}}
-                  transition={{delay: i * 0.1}}
-                  className={"text-md inline-block"}
-                >
-                  {letter.letter}
-                </motion.span>
-
-              </motion.div>
-            )
-          )}
-        </AnimatePresence>
-
-      </motion.div>
-
+      {cart.length > 0 && (
+        <Button
+          className={"mt-6 max-w-md w-full"}
+          onClick={() => setCheckoutProgress("payment-page")}
+        >
+          Checkout
+        </Button>
+      )}
     </motion.div>
   )
 }
