@@ -32,7 +32,7 @@ export default function CartMessage() {
               ? (
                 <span
                   onClick={() => setCheckoutProgress("cart-page")}
-                  className={"flex items-center gap-2"
+                  className={"flex items-center gap-2 justify-center"
                 }>
                   Head back to cart <ArrowLeft size={14}/>
                 </span>

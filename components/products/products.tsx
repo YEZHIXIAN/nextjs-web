@@ -13,7 +13,7 @@ type VariantTypes = {
 
 export default function Products({ variants }: VariantTypes) {
   return (
-    <main className={"grid sm:grid-cols-1 md:grid-cols-2 gap-12 lg:grid-cols-3 pb-6"}>
+    <main className={"grid sm:grid-cols-1 md:grid-cols-3 gap-12 lg:grid-cols-5 pb-6"}>
       {
         variants.map((variant, index) => (
           <Link
@@ -24,8 +24,8 @@ export default function Products({ variants }: VariantTypes) {
             <Image
               className={"rounded-md pb-2 h-full w-full object-cover"}
               src={variant.variantImages[0].url}
-              width={720}
-              height={480}
+              width={1080}
+              height={720}
               alt={variant.products.title}
               loading={"lazy"}
             />

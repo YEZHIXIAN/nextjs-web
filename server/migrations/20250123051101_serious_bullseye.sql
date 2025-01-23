@@ -1,0 +1,2 @@
+ALTER TABLE "order_product" ADD COLUMN "orderID" serial NOT NULL;--> statement-breakpoint
+ALTER TABLE "order_product" ADD CONSTRAINT "order_product_orderID_orders_id_fk" FOREIGN KEY ("orderID") REFERENCES "public"."orders"("id") ON DELETE cascade ON UPDATE no action;

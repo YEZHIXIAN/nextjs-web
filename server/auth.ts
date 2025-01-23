@@ -1,21 +1,35 @@
-import {db} from "@/server"
-import {users} from "@/server/schema";
-import {accounts} from "@/server/schema";
-import {LoginSchema} from "@/types/login-schema"
+import { db } from "@/server"
+import { users } from "@/server/schema";
+import { accounts } from "@/server/schema";
+import { LoginSchema } from "@/types/login-schema"
 import Credentials from "@auth/core/providers/credentials";
 import GitHub from "@auth/core/providers/github";
 import Google from "@auth/core/providers/google";
-import {DrizzleAdapter} from "@auth/drizzle-adapter"
+import { DrizzleAdapter } from "@auth/drizzle-adapter"
 import bcrypt from "bcrypt"
-import {eq} from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import NextAuth from "next-auth"
+import Stripe from "stripe"
 
-export const {handlers, auth, signIn, signOut} = NextAuth({
+export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: DrizzleAdapter(db),
   secret: process.env.AUTH_SECRET,
-  session: {strategy: "jwt"},
+  session: { strategy: "jwt" },
+  events: {
+    createUser: async ({ user }) => {
+      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2024-12-18.acacia" })
+      const customer = await stripe.customers.create({
+        email: user.email!,
+        name: user.name!
+      })
+      await db
+        .update(users)
+        .set({ customerID: customer.id })
+        .where(eq(users.id, user.id!))
+    },
+  },
   callbacks: {
-    async session({session, token}) {
+    async session({ session, token }) {
       if (session && token.sub) {
         session.user.id = token.sub
       }
@@ -34,7 +48,7 @@ export const {handlers, auth, signIn, signOut} = NextAuth({
 
       return session
     },
-    async jwt({token}){
+    async jwt({ token }) {
 
       if (!token.sub) {
         return token
@@ -75,7 +89,7 @@ export const {handlers, auth, signIn, signOut} = NextAuth({
         const validatedFields = LoginSchema.safeParse(credentials)
 
         if (validatedFields.success) {
-          const {email, password} = validatedFields.data
+          const { email, password } = validatedFields.data
 
           const user = await db.query.users.findFirst({
             where: eq(users.email, email)
