@@ -17,6 +17,7 @@ type InputTagsProps = React.ComponentProps<"input"> & {
 
 export const InputTags = forwardRef<HTMLInputElement, InputTagsProps>(({ onChange, value, ...props }, ref) => {
 
+  console.log(ref)
   const [pendingDataPoint, setPendingDataPoint] = useState("")
   const [focused, setFocused] = useState(false)
 
