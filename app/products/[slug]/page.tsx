@@ -11,30 +11,13 @@ import { db } from "@/server";
 import { productVariants } from "@/server/schema";
 import { eq } from "drizzle-orm";
 
-// Generate static params for all product variants
-export async function generateStaticParams() {
-  const data = await db.query.productVariants.findMany({
-    with: {
-      variantImages: true,
-      variantTags: true,
-      products: true,
-    },
-    orderBy: (productVariants, { desc }) => [desc(productVariants.id)],
-  });
 
-  return data ? data.map((variant) => ({ slug: variant.id.toString() })) : [];
-}
 
-// Define the props type for the Page component
-interface PageProps {
-  params: {
-    slug: string;
-  };
-}
+export default async function Page({ params } : { params : Promise<{ slug: string }>}) {
 
-export default async function Page({ params }: PageProps) {
+  const slug = (await params).slug
   const variant = await db.query.productVariants.findFirst({
-    where: eq(productVariants.id, Number(params.slug)),
+    where: eq(productVariants.id, Number(slug)),
     with: {
       products: {
         with: {
@@ -60,19 +43,19 @@ export default async function Page({ params }: PageProps) {
     <main>
       <section className="flex flex-col lg:flex-row gap-8">
         <div className="flex-1">
-          <ProductShowcase variants={variant.products.productVariants} />
+          <ProductShowcase variants={variant.products.productVariants}/>
         </div>
 
         <div className="flex gap-2 flex-col flex-1">
           <h2 className="text-2xl font-bold">{variant.products.title}</h2>
 
           <div className="text-sm">
-            <ProductType variants={variant?.products.productVariants} />
+            <ProductType variants={variant?.products.productVariants}/>
           </div>
 
-          <Stars rating={reviewAverage} totalReviews={variant.products.reviews.length} />
+          <Stars rating={reviewAverage} totalReviews={variant.products.reviews.length}/>
 
-          <Separator className="my-2" />
+          <Separator className="my-2"/>
 
           <p className="text-xl font-bold">
             {formatPrice(variant.products.price)}
@@ -99,10 +82,10 @@ export default async function Page({ params }: PageProps) {
               />
             ))}
           </div>
-          <AddCart />
+          <AddCart/>
 
           <div>
-            <Reviews productID={variant.productID} />
+            <Reviews productID={variant.productID}/>
           </div>
         </div>
       </section>

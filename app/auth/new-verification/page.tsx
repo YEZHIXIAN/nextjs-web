@@ -1,5 +1,9 @@
-import {EmailVerificationForm} from '@/components/auth/email-verification-form'
+import { EmailVerificationForm } from '@/components/auth/email-verification-form'
+import { Suspense } from "react";
 
 export default function EmailVerification() {
-  return <EmailVerificationForm />
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <EmailVerificationForm/>
+    </Suspense>)
 }

@@ -6,7 +6,7 @@ import {FormSuccess} from "@/components/auth/form-success";
 import {newVerification} from "@/server/actions/tokens";
 import {useSearchParams} from "next/navigation"
 import {useRouter} from "next/navigation"
-import {useCallback, useEffect, useState} from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 
 export const EmailVerificationForm = () => {
   const token = useSearchParams().get("token")
@@ -38,16 +38,18 @@ export const EmailVerificationForm = () => {
   }, [handleVerification])
 
   return (
-    <AuthCard
-      cardTitle={"Verify your account"}
-      backButtonHref={"/auth/login"}
-      backButtonLabel={"Back to login"}
-    >
-      <div className={"flex items-center flex-col w-full justify-center"}>
-        <p>{!success && !error ? "Verifying email..." : null}</p>
-        <FormSuccess message={"success"}/>
-        <FormError message={"error"}/>
-      </div>
-    </AuthCard>
+    <Suspense fallback={<div>Loading...</div>}>
+      <AuthCard
+        cardTitle={"Verify your account"}
+        backButtonHref={"/auth/login"}
+        backButtonLabel={"Back to login"}
+      >
+        <div className={"flex items-center flex-col w-full justify-center"}>
+          <p>{!success && !error ? "Verifying email..." : null}</p>
+          <FormSuccess message={success}/>
+          <FormError message={error}/>
+        </div>
+      </AuthCard>
+    </Suspense>
   )
 }
