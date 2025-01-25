@@ -1,6 +1,7 @@
 # Full Stack E-Commerce Platform
 
 Visit here: https://nextjs-2pn1lrhlz-yezhixians-projects.vercel.app
+(Please use Google to sign in.)
 
 Welcome to my Full Stack E-Commerce Platform! This project showcases a modern e-commerce solution built with the latest technologies to ensure a fast, secure, and enjoyable shopping experience.
 
